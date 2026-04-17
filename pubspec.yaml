@@ -10,6 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_native_splash: ^2.4.7
+  pedometer: ^4.2.0
+  permission_handler: ^12.0.1
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:
@@ -18,6 +21,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/squidge/
 
 flutter_native_splash:
   color: "#42a5f5"
