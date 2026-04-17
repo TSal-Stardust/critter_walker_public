@@ -1,103 +1,104 @@
 import 'package:flutter/material.dart';
-import '../models/evolution_stage.dart';
+import '../models/companion.dart';
+import '../services/creature_catalog.dart';
 import '../widgets/egg_progress_card.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatelessWidget {
+  final Companion? companion;
+  final ValueChanged<Companion> onCompanionChanged;
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+  const HomeScreen({
+    super.key,
+    required this.companion,
+    required this.onCompanionChanged,
+  });
 
-class _HomeScreenState extends State<HomeScreen> {
-  int currentSteps = 0;
+  void _addSteps(int amount) {
+    if (companion == null) return;
 
-  final List<EvolutionStage> stages = const [
-    EvolutionStage(
-      name: 'Mysterious Egg',
-      assetPath: 'assets/squidge/egg.png',
-      requiredSteps: 0,
-    ),
-    EvolutionStage(
-      name: 'Stage 1',
-      assetPath: 'assets/squidge/stage1.png',
-      requiredSteps: 2000,
-    ),
-    EvolutionStage(
-      name: 'Stage 2',
-      assetPath: 'assets/squidge/stage2.png',
-      requiredSteps: 5000,
-    ),
-    EvolutionStage(
-      name: 'Stage 3',
-      assetPath: 'assets/squidge/stage3.png',
-      requiredSteps: 8000,
-    ),
-  ];
+    final updatedCompanion = companion!.copyWith(
+      currentSteps: companion!.currentSteps + amount,
+    );
 
-  void addSteps(int amount) {
-    setState(() {
-      currentSteps += amount;
-    });
+    onCompanionChanged(updatedCompanion);
   }
 
-  void resetSteps() {
-    setState(() {
-      currentSteps = 0;
-    });
+  void _resetSteps() {
+    if (companion == null) return;
+
+    final updatedCompanion = companion!.copyWith(
+      currentSteps: 0,
+      speciesId: null,
+    );
+
+    onCompanionChanged(updatedCompanion);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
-      appBar: AppBar(
-        title: const Text('Critter Walker'),
-        centerTitle: true,
-        backgroundColor: const Color(0xFFF7F7F7),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: EggProgressCard(
-                  currentSteps: currentSteps,
-                  stages: stages,
-                  flavorText:
-                      'A warm, softly glowing egg. It seems to wiggle a little more with every step you take.',
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-              child: Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                alignment: WrapAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () => addSteps(500),
-                    child: const Text('+500 Steps'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => addSteps(1000),
-                    child: const Text('+1000 Steps'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => addSteps(2500),
-                    child: const Text('+2500 Steps'),
-                  ),
-                  OutlinedButton(
-                    onPressed: resetSteps,
-                    child: const Text('Reset'),
-                  ),
-                ],
-              ),
-            ),
-          ],
+    if (companion == null) {
+      return const SafeArea(
+        child: Center(
+          child: Text(
+            'No active companion found.',
+            style: TextStyle(fontSize: 20),
+          ),
         ),
+      );
+    }
+
+    final species = companion!.speciesId != null
+        ? CreatureCatalog.byId(companion!.speciesId!)
+        : null;
+
+    final displayName = species?.name ?? companion!.eggName;
+    final stages = CreatureCatalog.stagesForCompanion(companion!);
+
+    return SafeArea(
+      child: Column(
+        children: [
+          const SizedBox(height: 16),
+          Text(
+            displayName,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: EggProgressCard(
+                currentSteps: companion!.currentSteps,
+                stages: stages,
+                eggName: companion!.eggName,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+            child: Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () => _addSteps(500),
+                  child: const Text('+500 Steps'),
+                ),
+                ElevatedButton(
+                  onPressed: () => _addSteps(1000),
+                  child: const Text('+1000 Steps'),
+                ),
+                ElevatedButton(
+                  onPressed: () => _addSteps(2500),
+                  child: const Text('+2500 Steps'),
+                ),
+                OutlinedButton(
+                  onPressed: _resetSteps,
+                  child: const Text('Reset'),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

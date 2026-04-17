@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../models/companion.dart';
+import '../services/creature_catalog.dart';
+import '../services/progress_storage.dart';
+import 'compendium_screen.dart';
 import 'home_screen.dart';
 
 class MainShell extends StatefulWidget {
@@ -9,29 +13,102 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
+  final ProgressStorage _progressStorage = ProgressStorage();
+
   int selectedIndex = 0;
+  bool isLoading = true;
+  List<Companion> roster = [];
 
-  final List<Widget> pages = const [
-    HomeScreen(),
-    Placeholder(),
-    Placeholder(),
-    Placeholder(),
-    Placeholder(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadRoster();
+  }
 
-  void onTabTapped(int index) {
+  Future<void> _loadRoster() async {
+    final savedRoster = await _progressStorage.loadRoster();
+
+    if (!mounted) return;
+
     setState(() {
-      selectedIndex = index;
+      if (savedRoster.isNotEmpty) {
+        roster = savedRoster;
+      } else {
+        roster = const [
+          Companion(
+            id: 'starter_egg_1',
+            eggName: CreatureCatalog.mysteriousEggName,
+            currentSteps: 0,
+            speciesId: null,
+            isActive: true,
+          ),
+        ];
+      }
+      isLoading = false;
     });
+
+    await _progressStorage.saveRoster(roster);
+  }
+
+  Future<void> _saveRoster() async {
+    await _progressStorage.saveRoster(roster);
+  }
+
+  Companion? get activeCompanion {
+    try {
+      return roster.firstWhere((companion) => companion.isActive);
+    } catch (_) {
+      return roster.isNotEmpty ? roster.first : null;
+    }
+  }
+
+  Future<void> _updateCompanion(Companion updatedCompanion) async {
+    final hatchThreshold = CreatureCatalog.hatchThresholdForEgg(
+      updatedCompanion.eggName,
+    );
+
+    Companion resolvedCompanion = updatedCompanion;
+
+    if (resolvedCompanion.speciesId == null &&
+        resolvedCompanion.currentSteps >= hatchThreshold) {
+      resolvedCompanion = resolvedCompanion.copyWith(
+        speciesId: CreatureCatalog.speciesIdForEgg(resolvedCompanion.eggName),
+      );
+    }
+
+    setState(() {
+      roster = roster.map((companion) {
+        return companion.id == resolvedCompanion.id
+            ? resolvedCompanion
+            : companion;
+      }).toList();
+    });
+
+    await _saveRoster();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        backgroundColor: Color(0xFFF4F4F4),
+        body: SafeArea(child: Center(child: CircularProgressIndicator())),
+      );
+    }
+
+    final companion = activeCompanion;
+
+    final pages = [
+      HomeScreen(companion: companion, onCompanionChanged: _updateCompanion),
+      CompendiumScreen(roster: roster),
+      const Placeholder(),
+      const Placeholder(),
+      const Placeholder(),
+    ];
+
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
-
       body: IndexedStack(index: selectedIndex, children: pages),
-
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Container(
@@ -41,7 +118,7 @@ class _MainShellState extends State<MainShell> {
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black26,
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -51,35 +128,41 @@ class _MainShellState extends State<MainShell> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               NavBarItem(
-                icon: Icons.home_outlined,
+                icon: Icons.storefront_outlined,
                 isSelected: selectedIndex == 0,
-                onTap: () => onTabTapped(0),
+                onTap: () => _onTabTapped(0),
               ),
               NavBarItem(
-                icon: Icons.menu_book_outlined,
+                icon: Icons.book_outlined,
                 isSelected: selectedIndex == 1,
-                onTap: () => onTabTapped(1),
+                onTap: () => _onTabTapped(1),
               ),
               NavBarItem(
                 icon: Icons.pets,
                 isSelected: selectedIndex == 2,
-                onTap: () => onTabTapped(2),
+                onTap: () => _onTabTapped(2),
               ),
               NavBarItem(
                 icon: Icons.favorite_border,
                 isSelected: selectedIndex == 3,
-                onTap: () => onTabTapped(3),
+                onTap: () => _onTabTapped(3),
               ),
               NavBarItem(
                 icon: Icons.settings_outlined,
                 isSelected: selectedIndex == 4,
-                onTap: () => onTabTapped(4),
+                onTap: () => _onTabTapped(4),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _onTabTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
   }
 }
 

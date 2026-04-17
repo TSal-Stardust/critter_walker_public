@@ -10,9 +10,11 @@ class CritterWalkerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainShell(),
+      title: 'Critter Walker',
+      theme: ThemeData(useMaterial3: true),
+      home: const MainShell(),
     );
   }
 }
