@@ -32,21 +32,21 @@ class CreatureCatalog {
     EvolutionStage(
       name: 'Squidge',
       assetPath: 'assets/squidge/stage1.png',
-      requiredSteps: 2000,
+      requiredSteps: 10,
       flavorText:
           'Squidge has finally hatched. It blinks up at you with a soft smile and a very squishable body.',
     ),
     EvolutionStage(
       name: 'Squidge - Stage 2',
       assetPath: 'assets/squidge/stage2.png',
-      requiredSteps: 5000,
+      requiredSteps: 20,
       flavorText:
           'Squidge has grown bolder and more energetic. It seems eager to keep waddling by your side.',
     ),
     EvolutionStage(
       name: 'Squidge - Final Stage',
       assetPath: 'assets/squidge/stage3.png',
-      requiredSteps: 8000,
+      requiredSteps: 30,
       flavorText:
           'Squidge has reached its full potential. It radiates warmth, confidence, and calm companionship.',
     ),
@@ -58,7 +58,7 @@ class CreatureCatalog {
       speciesId: squidgeSpeciesId,
       name: 'Squidge (Hatchling)',
       assetPath: 'assets/squidge/stage1.png',
-      requiredSteps: 2000,
+      requiredSteps: 10,
       heightText: '0\'08"',
       weightText: '6 lbs',
       biography:
@@ -69,7 +69,7 @@ class CreatureCatalog {
       speciesId: squidgeSpeciesId,
       name: 'Squidge (Juvenile)',
       assetPath: 'assets/squidge/stage2.png',
-      requiredSteps: 5000,
+      requiredSteps: 20,
       heightText: '1\'04"',
       weightText: '15 lbs',
       biography:
@@ -80,7 +80,7 @@ class CreatureCatalog {
       speciesId: squidgeSpeciesId,
       name: 'Squidge (Final Form)',
       assetPath: 'assets/squidge/stage3.png',
-      requiredSteps: 8000,
+      requiredSteps: 30,
       heightText: '2\'01"',
       weightText: '28 lbs',
       biography:
