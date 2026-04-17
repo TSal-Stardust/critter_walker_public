@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import '../models/companion.dart';
 import '../services/creature_catalog.dart';
 import '../services/progress_storage.dart';
+import '../services/step_tracking_service.dart';
 import 'compendium_screen.dart';
 import 'home_screen.dart';
 
@@ -14,6 +18,9 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   final ProgressStorage _progressStorage = ProgressStorage();
+  final StepTrackingService _stepTrackingService = StepTrackingService();
+
+  StreamSubscription<int>? _stepDeltaSubscription;
 
   int selectedIndex = 0;
   bool isLoading = true;
@@ -23,6 +30,13 @@ class _MainShellState extends State<MainShell> {
   void initState() {
     super.initState();
     _loadRoster();
+  }
+
+  @override
+  void dispose() {
+    _stepDeltaSubscription?.cancel();
+    _stepTrackingService.dispose();
+    super.dispose();
   }
 
   Future<void> _loadRoster() async {
@@ -48,6 +62,30 @@ class _MainShellState extends State<MainShell> {
     });
 
     await _progressStorage.saveRoster(roster);
+    await _startStepTracking();
+  }
+
+  Future<void> _startStepTracking() async {
+    await _stepTrackingService.start();
+
+    await _stepDeltaSubscription?.cancel();
+    _stepDeltaSubscription = _stepTrackingService.stepDeltaStream.listen(
+      (int delta) {
+        final companion = activeCompanion;
+        if (companion == null || delta <= 0) {
+          return;
+        }
+
+        final updatedCompanion = companion.copyWith(
+          currentSteps: companion.currentSteps + delta,
+        );
+
+        _updateCompanion(updatedCompanion);
+      },
+      onError: (Object error) {
+        debugPrint('Step delta stream error: $error');
+      },
+    );
   }
 
   Future<void> _saveRoster() async {
