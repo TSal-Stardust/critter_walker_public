@@ -13,6 +13,7 @@ class HomeScreen extends StatelessWidget {
     required this.onCompanionChanged,
   });
 
+  // Debug method to simulate step progress - can be removed later
   void _addSteps(int amount) {
     if (companion == null) return;
 
@@ -23,6 +24,7 @@ class HomeScreen extends StatelessWidget {
     onCompanionChanged(updatedCompanion);
   }
 
+  // Debug method to reset steps and hatch state - can be removed later
   void _resetSteps() {
     if (companion == null) return;
 
@@ -72,6 +74,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
+          // Debug buttons to simulate step progress - can be removed later
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
             child: Wrap(
@@ -80,16 +83,16 @@ class HomeScreen extends StatelessWidget {
               alignment: WrapAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () => _addSteps(500),
-                  child: const Text('+500 Steps'),
+                  onPressed: () => _addSteps(1),
+                  child: const Text('+1 Step'),
                 ),
                 ElevatedButton(
-                  onPressed: () => _addSteps(1000),
-                  child: const Text('+1000 Steps'),
+                  onPressed: () => _addSteps(5),
+                  child: const Text('+5 Steps'),
                 ),
                 ElevatedButton(
-                  onPressed: () => _addSteps(2500),
-                  child: const Text('+2500 Steps'),
+                  onPressed: () => _addSteps(10),
+                  child: const Text('+10 Steps'),
                 ),
                 OutlinedButton(
                   onPressed: _resetSteps,

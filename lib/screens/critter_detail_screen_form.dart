@@ -9,6 +9,7 @@ class CritterDetailScreenForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       backgroundColor: const Color(0xFFF4F4F4),
       body: SafeArea(
         child: SingleChildScrollView(
