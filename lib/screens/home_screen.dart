@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../models/companion.dart';
 import '../services/creature_catalog.dart';
@@ -74,33 +75,33 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Debug buttons to simulate step progress - can be removed later
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-            child: Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              alignment: WrapAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _addSteps(1),
-                  child: const Text('+1 Step'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _addSteps(5),
-                  child: const Text('+5 Steps'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _addSteps(10),
-                  child: const Text('+10 Steps'),
-                ),
-                OutlinedButton(
-                  onPressed: _resetSteps,
-                  child: const Text('Reset'),
-                ),
-              ],
+          if (kDebugMode)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+              child: Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                alignment: WrapAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _addSteps(1),
+                    child: const Text('+1 Step'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _addSteps(5),
+                    child: const Text('+5 Steps'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _addSteps(10),
+                    child: const Text('+10 Steps'),
+                  ),
+                  OutlinedButton(
+                    onPressed: _resetSteps,
+                    child: const Text('Reset'),
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
