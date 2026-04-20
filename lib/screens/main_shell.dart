@@ -166,7 +166,7 @@ class _MainShellState extends State<MainShell> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               NavBarItem(
-                icon: Icons.storefront_outlined,
+                icon: Icons.pets,
                 isSelected: selectedIndex == 0,
                 onTap: () => _onTabTapped(0),
               ),
@@ -176,12 +176,12 @@ class _MainShellState extends State<MainShell> {
                 onTap: () => _onTabTapped(1),
               ),
               NavBarItem(
-                icon: Icons.pets,
+                icon: Icons.favorite_border,
                 isSelected: selectedIndex == 2,
                 onTap: () => _onTabTapped(2),
               ),
               NavBarItem(
-                icon: Icons.favorite_border,
+                icon: Icons.storefront_outlined,
                 isSelected: selectedIndex == 3,
                 onTap: () => _onTabTapped(3),
               ),
