@@ -16,10 +16,16 @@ jobs:
         run: |
           rm -rf assets/
           cp -r public_assets/ assets/
-      
-      - name: Push to public repository
+          rm -f .github/workflows/publish-public.yml
+
+      - name: Create public commit
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
+          git add -A
+          git commit -m "Publish public version"
+      
+      - name: Push to public repository
+        run: |
           git remote add public https://x-access-token:${{ secrets.PUBLIC_REPO_TOKEN }}@github.com/TSal-Stardust/critter_walker_public.git
           git push public HEAD:main --force
