@@ -1,0 +1,24 @@
+name: Publish Public Version
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Swap assets
+        run: |
+          rm -rf assets/
+          cp -r public_assets/ assets/
+      
+      - name: Push to public repository
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git remote add public https://${{ secrets.PUBLIC_REPO_TOKEN }}@github.com/TSal-Stardust/critter_walker_public.git
+          git push public HEAD:main --force
