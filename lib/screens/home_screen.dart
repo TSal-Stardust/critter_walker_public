@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
     required this.onCompanionChanged,
   });
 
-  // Debug method to simulate step progress - can be removed later
+  // Debug method to simulate step progress
   void _addSteps(int amount) {
     if (companion == null) return;
 
@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
     onCompanionChanged(updatedCompanion);
   }
 
-  // Debug method to reset steps and hatch state - can be removed later
+  // Debug method to reset steps and hatch state
   void _resetSteps() {
     if (companion == null) return;
 
