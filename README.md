@@ -1,6 +1,6 @@
-# Critter Walker
+# Critter Walker (working title)
 
-Critter Walker is a creature-raising mobile game built with Flutter. You walk in the real world, your companion counts those steps, and a mysterious egg slowly grows into a fully discovered critter you can track through its forms in the compendium.
+Critter Walker (working title) is a creature-raising mobile game built with Flutter. You walk in the real world, your companion counts those steps, and a mysterious egg slowly grows into a fully discovered critter you can track through its forms in the compendium.
 
 This repository is the public, code-safe version of the project. It exists so the app's engineering work can be shared openly without publishing the private production art, UI mockups, writing, or other unreleased creative materials used in the full game.
 
